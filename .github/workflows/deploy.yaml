@@ -27,20 +27,20 @@ jobs:
         run: |
           go mod tidy
           go build -o html-go .
-  # test:
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: checkout
-  #       uses: actions/checkout@v4
-  #     - name: build
-  #       uses: actions/setup-go@v5
-  #       with:
-  #         go-version: "stable"
-  #     - name: test code
-  #       run: |
-  #         go mod tidy
-  #         go test ./...
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "stable"
+      - name: test code
+        run: |
+          go mod tidy
+          go test ./...
   # staticCodeCheck:
   #   runs-on: ubuntu-latest
   #   steps:
@@ -80,23 +80,24 @@ jobs:
         run: |
           docker tag go-html-app:latest ${{ secrets.DOCKER_USERNAME }}/go-html-app:latest 
           docker push ${{secrets.DOCKER_USERNAME}}/go-html-app:latest
-  eks:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: configure aws
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.access_aws }}
-          aws-secret-access-key: ${{ secrets.secret_aws }}
-          aws-region: ${{ secrets.region }}
-      - name: setup kubectl
-        uses: azure/setup-kubectl@v4
-      - name: configure eks
-        run: |
-          aws eks update-kubeconfig --region ${{ secrets.region }} \
-                        -- name ${{ secrets.eks_clsuter_name }}
-      - name: deployment
-        run: |
-          kubectl apply -f ./k8s/mainfest/deployment.yaml
+  # eks:
+  #   needs: imageBuild
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #     - name: configure aws
+  #       uses: aws-actions/configure-aws-credentials@v4
+  #       with:
+  #         aws-access-key-id: ${{ secrets.access_aws }}
+  #         aws-secret-access-key: ${{ secrets.secret_aws }}
+  #         aws-region: ${{ secrets.region }}
+  #     - name: setup kubectl
+  #       uses: azure/setup-kubectl@v4
+  #     - name: configure eks
+  #       run: |
+  #         aws eks update-kubeconfig --region ${{ secrets.region }} \
+  #                       -- name ${{ secrets.eks_clsuter_name }}
+  #     - name: deployment
+  #       run: |
+  #         kubectl apply -f ./k8s/mainfest/deployment.yaml
