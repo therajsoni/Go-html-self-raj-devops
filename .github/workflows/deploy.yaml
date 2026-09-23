@@ -37,7 +37,6 @@ jobs:
           go-version: "stable"
       - name: test code
         run: |
-          cd html-go 
           go mod tidy
           go test ./...
   # staticCodeCheck:
