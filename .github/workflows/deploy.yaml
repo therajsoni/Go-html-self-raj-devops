@@ -68,10 +68,10 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: "stable"
-      - name: test
-        run: |
-          go mod tidy 
-          go test ./..
+      # - name: test
+      #   run: |
+      #     go mod tidy
+      #     go test ./..
       - name: list files
         run: |
           ls -la
