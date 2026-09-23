@@ -1,0 +1,17 @@
+version: apps/v1
+type: Ingress
+metadata:
+  name: html-go-app-ingress
+  namespace: html-go
+spec:
+  IngressController: alb
+  rules:
+    - host: example.com
+      http:
+        paths:
+          path: /
+          pathType: Prefix
+          backend:
+            service:
+              - name: html-go-app-service
+                number: 8080

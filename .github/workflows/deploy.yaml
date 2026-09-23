@@ -1,0 +1,102 @@
+name: Go blog
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+jobs:
+  checkout:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkoutcode
+        uses: actions/checkout@v4
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "stable"
+
+      - name: Build code
+        run: |
+          go mod tidy
+          go build -o html-go .
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: build
+        uses: actions/setup-go@v5
+        with:
+          go-version: "stable"
+      - name: test code
+        run: |
+          cd html-go 
+          go mod tidy
+          go test ./...
+  # staticCodeCheck:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: checkout
+  #       uses: actions/checkout@v4
+  #     - name: sonarqube scan
+  #       uses: sonarqube/sonarqube-scan-actions@v3
+  #       env:
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  #       with:
+  #         args: >
+  #           -Dsonar.projectKey=go-html-key
+  #           -Dsonar.sources=.
+  #           -Dsonar.tests=.
+  #           -Dsonar.test.inclusions=**/*_test.go
+  #           -Dsonar.go-coverage.reportPaths=coverage.out
+  imageBuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: build
+        uses: actions/setup-go@v5
+        with:
+          go-version: "stable"
+      - name: test
+        run: |
+          go mod tidy 
+          go test ./..
+      - name: docker image build
+        run: |
+          docker build -t go-html-app:latest .
+      - name: login docker
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }} --password-stdin"
+      - name: push into docker hub
+        run: |
+          docker tag go-html:latest ${{ secrets.DOCKER_USERNAME }}/go-html-app:latest 
+          docker push ${{secrets.DOCKER_USERNAME}}/go-html-app:latest
+  # eks:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #      - name: Checkout code
+  #        uses: actions/checkout@v4
+  #      - name: configure aws
+  #        uses: aws-actions/configure-aws-credentials@v4
+  #        with:
+  #         aws-access-key-id: ${{ secrets.access_aws }}
+  #         aws-secret-access-key: ${{ secrets.secret_aws }}
+  #         aws-region: ${{ secrets.region }}
+  #      - name: setup kubectl
+  #        uses: azure/setup-kubectl@v4
+  #      - name: configure eks
+  #        run: |
+  #         aws eks update-kubeconfig --region ${{ secrets.region }} \
+  #                       -- name ${{ secrets.eks_clsuter_name }}
+  #      - name: deployment
+  #        run: |
+  #          kubectl apply -f ./k8s/mainfest/deployment.yaml

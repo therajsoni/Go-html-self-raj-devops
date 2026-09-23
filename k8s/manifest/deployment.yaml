@@ -1,0 +1,24 @@
+version: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment
+  namespace: go-html
+  labels:
+    app: go-app-html
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: go-app-html-pod
+  templates:
+    metadata:
+      name: app-pod
+      namespace: go-html
+      labels:
+        app: go-app-html-pod
+      spec:
+        containers:
+          - name: go-html-app
+            image: go-html-app:latest
+            ports:
+              - containerPort: 80

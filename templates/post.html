@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>{{.Title}}</title>
+
+    <link rel="stylesheet" href="../style/index.css" />
+  </head>
+
+  <body>
+    <nav class="navbar">
+      <div class="logo">GoBlog</div>
+
+      <div class="nav-links">
+        <a href="/"> Home </a>
+      </div>
+    </nav>
+
+    <main class="detail-container">
+      <a href="/"> ← Back to Home </a>
+
+      <h1>{{.Title}}</h1>
+
+      <p class="content">{{.Content}}</p>
+    </main>
+  </body>
+</html>
