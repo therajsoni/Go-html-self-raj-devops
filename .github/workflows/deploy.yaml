@@ -12,6 +12,7 @@ jobs:
       - name: checkoutcode
         uses: actions/checkout@v4
   build:
+    needs: checkout
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -27,6 +28,7 @@ jobs:
           go mod tidy
           go build -o html-go .
   test:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -57,6 +59,7 @@ jobs:
   #           -Dsonar.test.inclusions=**/*_test.go
   #           -Dsonar.go-coverage.reportPaths=coverage.out
   imageBuild:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: checkout
