@@ -64,22 +64,19 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
-        run: |
-          ls -la
       - name: build
         uses: actions/setup-go@v5
         with:
           go-version: "stable"
-        run: |
-          ls -la
       - name: test
         run: |
           go mod tidy 
           go test ./..
+      - name: list files
+        run: |
           ls -la
       - name: docker image build
         run: |
-          ls -la
           docker build -t go-html-app:latest .
       - name: login docker
         run: |
