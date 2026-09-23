@@ -6,41 +6,41 @@ on:
       - main
       - master
 jobs:
-  checkout:
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkoutcode
-        uses: actions/checkout@v4
-  build:
-    needs: checkout
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  # checkout:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: checkoutcode
+  #       uses: actions/checkout@v4
+  # build:
+  #   needs: checkout
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
 
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "stable"
+  #     - name: Setup Go
+  #       uses: actions/setup-go@v5
+  #       with:
+  #         go-version: "stable"
 
-      - name: Build code
-        run: |
-          go mod tidy
-          go build -o html-go .
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout
-        uses: actions/checkout@v4
-      - name: build
-        uses: actions/setup-go@v5
-        with:
-          go-version: "stable"
-      - name: test code
-        run: |
-          go mod tidy
-          go test ./...
+  #     - name: Build code
+  #       run: |
+  #         go mod tidy
+  #         go build -o html-go .
+  # test:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: checkout
+  #       uses: actions/checkout@v4
+  #     - name: build
+  #       uses: actions/setup-go@v5
+  #       with:
+  #         go-version: "stable"
+  #     - name: test code
+  #       run: |
+  #         go mod tidy
+  #         go test ./...
   # staticCodeCheck:
   #   runs-on: ubuntu-latest
   #   steps:
@@ -74,6 +74,7 @@ jobs:
           go test ./..
       - name: docker image build
         run: |
+          ls
           docker build -t go-html-app:latest .
       - name: login docker
         run: |
