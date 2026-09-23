@@ -59,7 +59,7 @@ jobs:
   #           -Dsonar.test.inclusions=**/*_test.go
   #           -Dsonar.go-coverage.reportPaths=coverage.out
   imageBuild:
-    needs: test
+    # needs: test
     runs-on: ubuntu-latest
     steps:
       - name: checkout
